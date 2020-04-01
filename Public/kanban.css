@@ -1,0 +1,167 @@
+@font-face {
+    font-family: Roboto-Regular;
+    src: url(Roboto/Roboto-Regular.ttf);
+  }
+
+* {
+    box-sizing: border-box;
+    font-family: Roboto-Regular;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    overflow: hidden;
+}
+
+p {
+    margin: 0px;
+}
+
+#menu {
+    width: 75px;
+    border-right: 1px solid gray;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 50px;
+}
+
+#menu > i {
+    margin-top: 10px;
+    color: gray;
+    cursor: pointer;
+}
+#menu > i.selected {
+    color: black;
+}
+
+#container {
+    display: flex;
+    overflow: auto;
+    height: 100%;
+}
+
+.stack {
+    width: 300px;
+    margin: 10px;
+    background-color: lightgrey;
+    border-radius: 5px;
+}
+
+.stack-title {
+    margin: 10px;
+    font-size: 20px;
+}
+
+.stack-new {
+    margin: 10px;
+    font-size: 16px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding-left: 10px;
+    border-radius: 5px;
+}
+.stack-new:hover {
+    background-color: gray;
+}
+
+.stack-new > i {
+    margin-right: 7.5px;
+}
+
+.card {
+    background-color: white;
+    min-height: 40px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    word-wrap: break-word;
+}
+
+.card:hover {
+    background-color: #F6F6F6;
+}
+
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: default; /* Add a pointer on hover */
+}
+
+#popup {
+    display: none;
+    position: fixed;
+    width: 750px;
+    min-height: 750px;
+    margin: 5% auto; /* Will not center vertically and won't work in IE6/7. */
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 3;
+
+    padding: 20px;
+    flex-direction: column;
+}
+
+#title {
+    font-size: 28px;
+    margin: 0px;
+    margin-bottom: 10px;
+}
+
+#title:empty::after {
+    content: "Title";
+    color: gray;
+}
+
+.header {
+    margin-bottom: 5px;
+    color: gray;
+}
+
+#popup-container {
+    display: flex;
+}
+
+#left {
+    width: calc(100% - 150px);
+}
+
+#right {
+    margin-left: 10px;
+    width: 140px;
+}
+
+#right > button {
+    width: 100%;
+    background: none;
+    background-color: lightgray;
+    border-radius: 5px;
+    padding: 7.5px;
+    text-align: left;
+    border: 0.5px solid gray;
+    cursor: pointer;
+}
+
+#right > button:hover {
+    background-color: gray;
+}
+
+#right > button > i {
+    margin-right: 7.5px;
+}
+

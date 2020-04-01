@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">-->
+
+  <link rel="stylesheet" type="text/css" href="./Public/kanban.css">
+  <link href="./Public/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="./Public/simplemde.min.css">
+  <script src="./Public/simplemde.min.js"></script>
+  <title>Kanban</title>
+</head>
+
+<body>
+  <div id="menu">
+    <i class="fas fa-sticky-note" onclick="window.location.href='notes.html'"></i>
+    <i class="fas fa-columns selected" onclick="window.location.href='kanban.html'"></i>
+  </div>
+  <div id="container">
+    <!--<div class="stack" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <p class="stack-title">ToDo</p>
+        <div id="1" class="card" draggable="true" ondragstart="drag(event)" onclick="openCard(event)">
+            <p class="card-title">Testasdfajksdhfkjahdsfkjahskldjfhakdshfkajhdsfkljhaksjdfhkajsdhfklahskjdfhaskdjfh</p>
+        </div>
+        <div id="2" class="card" draggable="true" ondragstart="drag(event)" onclick="openCard(event)"></div>
+        <div id="3" class="card" draggable="true" ondragstart="drag(event)" onclick="openCard(event)"></div>
+    </div>
+
+    <div class="stack" ondrop="drop(event)" ondragover="allowDrop(event)">
+
+    </div>-->
+  </div>
+
+  <div id="overlay" onclick="hideCard(event)"></div>
+
+  <div id="popup">
+    <p id="title" contenteditable="true"></p>
+    <div id="popup-container">
+      <div id="left">
+        <p class="header">Description</p>
+        <textarea id="description"></textarea>
+      </div>
+      <div id="right">
+        <button onclick="deleteCard()"><i class="fas fa-trash-alt"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- You can also require other files to run in this process -->
+
+  <script src="./Public/kanban.js"></script>
+</body>
+
+</html>

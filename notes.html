@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">-->
+
+    <link rel="stylesheet" type="text/css" href="./Public/notes.css">
+    <link href="./Public/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="./Public/simplemde.min.css">
+    <script src="./Public/simplemde.min.js"></script>
+    <title>Notes</title>
+  </head>
+  <body>
+    <div id="menu">
+        <i class="fas fa-sticky-note selected" onclick="window.location.href='notes.html'"></i>
+        <i class="fas fa-columns" onclick="window.location.href='kanban.html'"></i>
+    </div>
+    <div id="container">
+      <div id="tabs">
+        <div id="new-tab" onclick="newTab()" class="tab">
+          <i class="fas fa-plus"></i>
+        </div>
+      </div>
+      <div id="notes">
+        <textarea id="text"></textarea>
+      </div>
+    </div>
+    <script src="./Public/notes.js"></script>
+  </body>
+</html>
