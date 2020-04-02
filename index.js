@@ -10,11 +10,13 @@ function createWindow () {
     }
   });
 
+  win.removeMenu(); 
+  win.maximize();
   // and load the index.html of the app.
-  win.loadFile('index.html');
+  win.loadFile('kanban.html');
 
   // Öffnen der DevTools.
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

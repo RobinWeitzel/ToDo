@@ -1,0 +1,5 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.robinweitzel.todo
+electronVersion: 8.2.0

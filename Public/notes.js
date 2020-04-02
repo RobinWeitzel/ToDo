@@ -1,3 +1,9 @@
+const Store = require('electron-store');
+const Dialogs = require('dialogs');
+
+const store = new Store();
+const dialogs = Dialogs();
+
 let data;
 
 let selectedTab;
@@ -24,11 +30,9 @@ const createTab = obj => {
 }
 
 const load = () => {
-    data = localStorage.getItem("notes");
+    data = store.get("notes");
 
-    if(data) {
-        data = JSON.parse(data);
-    } else {
+    if(!data) {
         data = [
         ];
     }
@@ -55,35 +59,37 @@ const loadTab = tab => {
 }
 
 const newTab = () => {
-    const title = prompt("Name of the note");
-
-    if(title) {
-        const tab = {
-            id: uuidv4(),
-            title: title,
-            content: ""
-        };
-
-        data.push(tab);
-        const t = createTab(tab);
-
-        document.getElementById('tabs').insertBefore(t, document.getElementById('new-tab'));
-        loadTab(tab)();
-        t.classList.add('selected');
-
-        localStorage.setItem("notes", JSON.stringify(data));
-    }
+    const title = dialogs.prompt("Enter name of the note", title => {
+        if(title) {
+            const tab = {
+                id: uuidv4(),
+                title: title,
+                content: ""
+            };
+    
+            data.push(tab);
+            const t = createTab(tab);
+    
+            document.getElementById('tabs').insertBefore(t, document.getElementById('new-tab'));
+            loadTab(tab)();
+            t.classList.add('selected');
+    
+            store.set("notes", data);
+        }
+    });
 }
 
 const deleteTab = tab => {
     return e => {
-        if(confirm("Do you really want to delete this note?")) {
-            const index = data.indexOf(tab);
-            data.splice(index, 1);
-            localStorage.setItem("notes", JSON.stringify(data));
-            document.getElementById(tab.id).remove();
-            document.getElementById('notes').style.display = 'none';
-        }
+        dialogs.confirm("Do you really want to delete this note?", ok => {
+            if(ok) {
+                const index = data.indexOf(tab);
+                data.splice(index, 1);
+                store.set("notes", data);
+                document.getElementById(tab.id).remove();
+                document.getElementById('notes').style.display = 'none';
+            }
+        });
         e.stopPropagation();
     }
 }
@@ -100,6 +106,6 @@ const simplemde = new SimpleMDE({
 simplemde.codemirror.on("change", function(){
 	if(selectedTab) {
         selectedTab.content = simplemde.value();
-        localStorage.setItem("notes", JSON.stringify(data));
+        store.set("notes",data);
     }
 });
