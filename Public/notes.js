@@ -45,8 +45,8 @@ const load = () => {
 const loadTab = tab => {
     return e => {
         selectedTab = tab;
-        simplemde.value(tab.content);
         document.getElementById('notes').style.display = 'block';
+        simplemde.value(tab.content);
 
         document.querySelectorAll('.tab').forEach(t => {
             t.classList.remove('selected');

@@ -12,7 +12,7 @@ const uuidv4 = () => {
 }
 
 let data;
-
+let archive;
 let selectedCard;
 let selectedStack;
 
@@ -96,6 +96,12 @@ const loadData = () => {
         } 
         document.getElementById('container').insertBefore(element, document.getElementById('new-stack'));
     }
+
+    archive = store.get("archive");
+
+    if(!archive) {
+        archive = [];
+    }
 }
 
 const getParent = (element, selector) => {
@@ -177,12 +183,13 @@ const hideEdit = e => {
 }
 
 const deleteCard = e => {
-    dialogs.confirm("Do you really want to delete this card?", ok => {
+    dialogs.confirm("Do you really want to archive this card?", ok => {
         if(ok) {
             for(const stack of data) {
                 const index = stack.cards.indexOf(selectedCard);
     
                 if(index >= 0) {
+                    archive.push(selectedCard);
                     stack.cards.splice(index, 1);
                 }
             }
@@ -192,6 +199,7 @@ const deleteCard = e => {
             document.getElementById(id).remove();
             hideCard();
             store.set("kanban", data);
+            store.set("archive", archive);
         }
     });
 }
