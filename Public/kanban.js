@@ -182,7 +182,7 @@ const hideEdit = e => {
     }
 }
 
-const deleteCard = e => {
+const archiveCard = e => {
     dialogs.confirm("Do you really want to archive this card?", ok => {
         if(ok) {
             for(const stack of data) {
@@ -200,6 +200,26 @@ const deleteCard = e => {
             hideCard();
             store.set("kanban", data);
             store.set("archive", archive);
+        }
+    });
+}
+
+const deleteCard = e => {
+    dialogs.confirm("Do you really want to delete this card?", ok => {
+        if(ok) {
+            for(const stack of data) {
+                const index = stack.cards.indexOf(selectedCard);
+    
+                if(index >= 0) {
+                    stack.cards.splice(index, 1);
+                }
+            }
+    
+            const id = selectedCard.id;
+            selectedCard = undefined;
+            document.getElementById(id).remove();
+            hideCard();
+            store.set("kanban", data);
         }
     });
 }
