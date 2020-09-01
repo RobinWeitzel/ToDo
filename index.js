@@ -6,7 +6,8 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      enableRemoteModule: true
     }
   });
 
@@ -18,7 +19,7 @@ function createWindow () {
   console.log(app.getPath('userData'));
 
   // Öffnen der DevTools.
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

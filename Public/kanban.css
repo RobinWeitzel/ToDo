@@ -8,6 +8,26 @@
     font-family: Roboto-Regular;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+  
+  /* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+   
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+  
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
 body {
     margin: 0px;
     padding: 0px;
@@ -65,6 +85,8 @@ p {
     border-radius: 5px;
     height: 100%;
     flex-shrink: 0;
+    max-height: 99vh;
+    overflow-y: auto;
 }
 
 .stack.Blue {
