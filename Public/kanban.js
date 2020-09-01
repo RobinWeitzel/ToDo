@@ -183,5 +183,27 @@ const simplemde = new SimpleMDE({
     autosave: false,
     toolbar: false,
     autoDownloadFontAwesome: false,
-    status: false
+    status: false,
+    autoSuggest: 
+    {
+        mode: 'markdown',
+        startChars: ['@'],
+        listCallback: function(stringToTest)
+        {
+            return [
+                    {
+                        text: 'Thomas ',
+                        displayText: 'Thomas'
+                    },
+                    {
+                        text: 'Maria ',
+                        displayText: 'Maria'
+                    },
+                    {
+                        text: 'Peter ',
+                        displayText: 'Peter'
+                    }
+                ];
+        }
+    }
 });

@@ -1,0 +1,11 @@
+directories:
+  output: dist
+  buildResources: build
+productName: ToDo
+appId: com.robinweitzel.todo
+win:
+  target:
+    - portable
+portable:
+  artifactName: todo.exe
+electronVersion: 8.2.0
