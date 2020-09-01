@@ -12,12 +12,12 @@
   "author": "Robin Weitzel",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^8.5.0",
+    "electron": "^10.1.1",
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
     "dialogs": "^2.0.1",
-    "electron-store": "^5.2.0"
+    "electron-store": "^6.0.0"
   },
   "build": {
     "productName": "ToDo",
