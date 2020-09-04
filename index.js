@@ -14,9 +14,9 @@ function createWindow () {
   win.removeMenu(); 
   win.maximize();
   // and load the index.html of the app.
-  win.loadFile('kanban.html');
+  win.loadFile('kanban-new.html');
 
-  console.log(app.getPath('userData'));
+  //console.log(app.getPath('userData'));
 
   // Öffnen der DevTools.
   win.webContents.openDevTools();
