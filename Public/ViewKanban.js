@@ -137,7 +137,7 @@ TSF.Repository.registerComponent(class ViewKanban extends TSF.Component {
         };
 
         task.items.push(item);
-        this.state.selected = item;
+        this.selectItem(null, item);
         this.state._domChange['open']();
         this.save();
 
