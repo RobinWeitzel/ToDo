@@ -132,7 +132,8 @@ TSF.Repository.registerComponent(class ViewKanban extends TSF.Component {
         const item = {
             id: uuidv4(),
             title: "",
-            description: ""
+            description: "",
+            date: new Date().toISOString()
         };
 
         task.items.push(item);
