@@ -166,7 +166,6 @@ TSF.Repository.registerComponent(class ViewKanban extends TSF.Component {
     }
 
     archiveItem(e) {
-        this.state.archive.push(this.state.selected);
         this.state.open.tasks.forEach(task => {
             const index = task.items.findIndex(i => i.id === this.state.selected.id);
             if(index >= 0) {
@@ -181,6 +180,21 @@ TSF.Repository.registerComponent(class ViewKanban extends TSF.Component {
         this.state._domChange['open']();
         this.save();
         store.set("new-archive", this.state.archive);
+    }
+
+    deleteItem(e) {
+        this.state.open.tasks.forEach(task => {
+            const index = task.items.findIndex(i => i.id === this.state.selected.id);
+            if(index >= 0) {
+                const item = task.items.splice(index, 1);
+            }
+        });
+
+        this.state.selected = null;
+        this.state.largePanel = false;
+
+        this.state._domChange['open']();
+        this.save();
     }
 
     renderDate(date) {

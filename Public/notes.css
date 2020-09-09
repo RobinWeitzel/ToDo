@@ -1,0 +1,73 @@
+@font-face {
+    font-family: Roboto-Regular;
+    src: url(Roboto/Roboto-Regular.ttf);
+  }
+
+* {
+    box-sizing: border-box;
+    font-family: Roboto-Regular;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    overflow: hidden;
+}
+
+p {
+    margin: 0px;
+}
+
+#menu {
+    width: 75px;
+    border-right: 1px solid gray;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 50px;
+}
+
+#menu > i {
+    margin-top: 10px;
+    color: gray;
+    cursor: pointer;
+}
+#menu > i.selected {
+    color: black;
+}
+
+#container {
+    display: flex;
+    overflow: auto;
+    height: 100%;
+    width: calc(100vw - 75px);
+    flex-direction: column;
+}
+
+#tabs {
+    height: 50px;
+    border-bottom: 1px solid gray;
+}
+
+.tab {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    padding: 15px;
+    border-right: 1px solid gray;
+    cursor: pointer;
+}
+
+.tab i {
+    margin-left: 7.5px;
+}
+
+.tab.selected {
+    font-weight: bold;
+}
+
+#notes {
+    display: none;
+}

@@ -487,14 +487,14 @@ tr.active .table-mark {
 .card > * {
     font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
-    font-size: 18px;
-    font-weight: 400;
+    /*font-size: 18px;
+    font-weight: 400;*/
     margin: 12px;
     padding: 0px;
     height: auto;
     width: auto;
     flex-shrink: 0;
-    min-height: 27px;
+    min-height: 24px; /* 27 */
 }
 
 /* Panel */
