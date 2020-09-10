@@ -8,6 +8,7 @@
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">-->
 
   <link rel="stylesheet" type="text/css" href="./Public/kanban.css">
+  <link rel="stylesheet" type="text/css" href="./Public/bootstrap.min.css">
   <link href="./Public/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
   <link rel="stylesheet" href="./Public/simplemde.min.css">
   <script src="./Public/simplemde.min.js"></script>
@@ -20,21 +21,13 @@
     <i class="fas fa-columns selected" onclick="window.location.href='kanban.html'"></i>
   </div>
   <div id="container">
-    <!--<div class="stack" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <p class="stack-title">ToDo</p>
-        <div id="1" class="card" draggable="true" ondragstart="drag(event)" onclick="openCard(event)">
-            <p class="card-title">Testasdfajksdhfkjahdsfkjahskldjfhakdshfkajhdsfkljhaksjdfhkajsdhfklahskjdfhaskdjfh</p>
-        </div>
-        <div id="2" class="card" draggable="true" ondragstart="drag(event)" onclick="openCard(event)"></div>
-        <div id="3" class="card" draggable="true" ondragstart="drag(event)" onclick="openCard(event)"></div>
+    <div id="new-stack" onclick="newStack()">
+      <p>New stack</p>
     </div>
-
-    <div class="stack" ondrop="drop(event)" ondragover="allowDrop(event)">
-
-    </div>-->
   </div>
 
   <div id="overlay" onclick="hideCard(event)"></div>
+  <div id="overlay-2" onclick="hideEdit(event)"></div>
 
   <div id="popup">
     <p id="title" contenteditable="true"></p>
@@ -44,9 +37,31 @@
         <textarea id="description"></textarea>
       </div>
       <div id="right">
-        <button onclick="deleteCard()"><i class="fas fa-trash-alt"></i> Delete</button>
+        <button type="button" class="btn btn-warning" onclick="archiveCard()"><i class="fas fa-archive"></i> Archive</button>
+        <button type="button" style="margin-top: 10px;" class="btn btn-danger" onclick="deleteCard()"><i class="fas fa-trash-alt"></i> Delete</button>
       </div>
     </div>
+  </div>
+
+  <div id="popup-2">
+    <div class="form-group">
+      <label for="title-2">Title</label>
+      <input type="text" class="form-control" id="title-2" aria-describedby="Title">
+    </div>
+
+    <div class="form-group">
+      <label for="color">Color</label>
+      <select class="form-control" id="color">
+        <option>Blue</option>
+        <option>Gray</option>
+        <option>Green</option>
+        <option>Orange</option>
+        <option>Red</option>
+        <option>Turquoise</option>
+      </select>
+    </div>
+
+    <button type="button" class="btn btn-danger" onclick="deleteStack()"><i class="fas fa-trash-alt"></i> Delete</button> 
   </div>
 
   <!-- You can also require other files to run in this process -->

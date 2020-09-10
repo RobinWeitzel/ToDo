@@ -1,3 +1,9 @@
+const Store = require('electron-store');
+const Dialogs = require('dialogs');
+
+const store = new Store();
+const dialogs = Dialogs();
+
 const uuidv4 = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
       let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -6,28 +12,41 @@ const uuidv4 = () => {
 }
 
 let data;
-
+let archive;
 let selectedCard;
+let selectedStack;
 
 const createStack = obj => {
     const stack = document.createElement('div');
     stack.classList.add('stack');
+    stack.classList.add(obj.color);
     stack.ondrop = drop;
     stack.ondragover=allowDrop;
+    stack.id = obj.id || uuidv4();
 
     // Title
     const p = document.createElement('p');
     p.classList.add('stack-title');
-    p.appendChild(document.createTextNode(obj.title));
+    const span = document.createElement('span');
+    span.id = obj.id + "-title";
+    span.appendChild(document.createTextNode(obj.title));
+    p.appendChild(span);
     stack.appendChild(p);
+
+    const i = document.createElement('i');
+    i.classList.add('fas');
+    i.classList.add('fa-cog');
+    i.classList.add('stack-edit');
+    i.onclick = openEdit(obj);
+    p.appendChild(i);
 
     // Add new card button
     const p2 = document.createElement('p');
     p2.classList.add('stack-new');
-    const i = document.createElement('i');
-    i.classList.add('fas');
-    i.classList.add('fa-plus');
-    p2.appendChild(i);
+    const i2 = document.createElement('i');
+    i2.classList.add('fas');
+    i2.classList.add('fa-plus');
+    p2.appendChild(i2);
     p2.appendChild(document.createTextNode("Add new card"));
     p2.onclick = () => {
         const card = {
@@ -63,26 +82,10 @@ const createCard = obj => {
 }
 
 const loadData = () => {
-    data = localStorage.getItem("kanban");
+    data = store.get("kanban");
 
-    if(data) {
-        data = JSON.parse(data);
-    } else {
-        data = [
-            {
-                title: "ToDo",
-                cards: [
-                ]
-            },
-            {
-                title: "In progress",
-                cards: []
-            },
-            {
-                title: "Done",
-                cards: []
-            },
-        ];
+    if(!data) {
+        data = [];
     }
 
     for(const stack of data) {
@@ -91,7 +94,13 @@ const loadData = () => {
             const elem = createCard(card);
             element.insertBefore(elem, element.querySelector('.stack-new'));
         } 
-        document.getElementById('container').appendChild(element);
+        document.getElementById('container').insertBefore(element, document.getElementById('new-stack'));
+    }
+
+    archive = store.get("archive");
+
+    if(!archive) {
+        archive = [];
     }
 }
 
@@ -121,12 +130,12 @@ const openCard = e => {
 
 const hideCard = e => {
     if(selectedCard) {
-        selectedCard.title = document.getElementById('title').innerHTML;
+        selectedCard.title = document.getElementById('title').innerText;
         document.getElementById(selectedCard.id + "-title").innerHTML = selectedCard.title;
         selectedCard.description = simplemde.value();
         selectedCard = undefined;
 
-        localStorage.setItem("kanban", JSON.stringify(data));
+        store.set("kanban", data);
     }
 
     // Hide elements
@@ -138,21 +147,113 @@ const hideCard = e => {
     }
 }
 
+const openEdit = stack => {
+    return e => {
+        selectedStack = stack;
+
+        // Load data into popup
+        document.getElementById('title-2').value = selectedStack.title;
+        document.getElementById('color').value = selectedStack.color || "Gray";
+            
+        // Show elements
+        document.getElementById("overlay-2").style.display = "block";
+        document.getElementById("popup-2").style.display = "flex";
+    }
+}
+
+const hideEdit = e => {
+    if(selectedStack) {
+        selectedStack.title = document.getElementById('title-2').value;
+        document.getElementById(selectedStack.id + "-title").innerHTML = selectedStack.title;
+        document.getElementById(selectedStack.id).classList.remove(selectedStack.color);
+        selectedStack.color = document.getElementById('color').value;
+        document.getElementById(selectedStack.id).classList.add(selectedStack.color);
+        selectedStack = undefined;
+
+        store.set("kanban", data);
+    }
+
+    // Hide elements
+    document.getElementById("overlay-2").style.display = "none";
+    document.getElementById("popup-2").style.display = "none";
+
+    if(e) {
+        e.stopPropagation();
+    }
+}
+
+const archiveCard = e => {
+    dialogs.confirm("Do you really want to archive this card?", ok => {
+        if(ok) {
+            for(const stack of data) {
+                const index = stack.cards.indexOf(selectedCard);
+    
+                if(index >= 0) {
+                    archive.push(selectedCard);
+                    stack.cards.splice(index, 1);
+                }
+            }
+    
+            const id = selectedCard.id;
+            selectedCard = undefined;
+            document.getElementById(id).remove();
+            hideCard();
+            store.set("kanban", data);
+            store.set("archive", archive);
+        }
+    });
+}
+
 const deleteCard = e => {
-    if(confirm("Do you really want to delte this card?")) {
-        for(const stack of data) {
-            const index = stack.cards.indexOf(selectedCard);
+    dialogs.confirm("Do you really want to delete this card?", ok => {
+        if(ok) {
+            for(const stack of data) {
+                const index = stack.cards.indexOf(selectedCard);
+    
+                if(index >= 0) {
+                    stack.cards.splice(index, 1);
+                }
+            }
+    
+            const id = selectedCard.id;
+            selectedCard = undefined;
+            document.getElementById(id).remove();
+            hideCard();
+            store.set("kanban", data);
+        }
+    });
+}
+
+const newStack = e => {
+    const stack = {
+        id: uuidv4(),
+        title: "",
+        cards: [],
+        color: "Gray"
+    }
+    data.push(stack);
+    const element = createStack(stack);
+    document.getElementById('container').insertBefore(element, document.getElementById('new-stack'));
+    openEdit(stack)();
+}
+
+const deleteStack = () => {
+    dialogs.confirm("Do you really want to delete this stack?", ok => {
+        if(ok) {
+            const index = data.indexOf(selectedStack);
 
             if(index >= 0) {
-                stack.cards.splice(index, 1);
+                data.splice(index, 1);
             }
+    
+            const id = selectedStack.id;
+            selectedStack = undefined;
+            document.getElementById(id).remove();
+            hideEdit();
+            store.set("kanban", data);
         }
-
-        const id = selectedCard.id;
-        selectedCard = undefined;
-        document.getElementById(id).remove();
-        hideCard();
-    }
+    })
+   
 }
 
 allowDrop = e => {
@@ -165,16 +266,51 @@ drag = e => {
 
 drop = e => {
     e.preventDefault();
-    const data = e.dataTransfer.getData("text");
+    const id = e.dataTransfer.getData("text");
     const stack = getParent(e.target, ".stack");
+    let pos;
 
     // Dropped on a card
     if(stack !== e.target) {
-        const card = getParent(e.target, ".card");
-        stack.insertBefore(document.getElementById(data), card);
+        let card = getParent(e.target, ".card");
+        if(!card) {
+            card = getParent(e.target, ".stack-new");
+        }
+
+        if(!card) {
+            card = getParent(e.target, ".stack-title");
+            card = card.nextSibling;
+        }
+        stack.insertBefore(document.getElementById(id), card);
+
+        pos = -1;
+        let newCard = document.getElementById(id);
+        while((newCard = newCard.previousSibling) != null) {
+            pos++;
+        }
     } else { // dropped on stack
-        stack.insertBefore(document.getElementById(data), stack.querySelector('.stack-new'));
+        stack.insertBefore(document.getElementById(id), stack.querySelector('.stack-new'));
+
+        pos = -1;
     }
+
+    const newStack = data.filter(s => s.id === stack.id)[0];
+    for(const oldStack of data) {
+        const cards = oldStack.cards.filter(c => c.id === id);
+
+        if(cards.length > 0) {
+            const card = cards[0];
+            oldStack.cards.splice(oldStack.cards.indexOf(card), 1);
+            if(pos === -1) {
+                newStack.cards.push(card);
+            } else {
+                newStack.cards.splice(pos, 0, card);
+            }
+            break;
+        }
+    }
+
+    store.set("kanban", data);
 }
 
 loadData();

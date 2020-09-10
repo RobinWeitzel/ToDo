@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,600">
+    <!-- Icons -->
+    <script src="Public/fontawesome/fontawesome.js"></script>
+    <link href="Public/mdl2-icons/css/mdl2-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="./Public/bootstrap.min.css">
+    <link rel="stylesheet" href="./Public/simplemde.min.css">
+    <script src="./Public/simplemde.min.js"></script>
+
+    <link href="Public/microsoft.css" rel="stylesheet" />
+    <link href="Public/kanban-new.css" rel="stylesheet" />
+
+    <script src="Public/the-simple-framework.js"></script>
+
+    <script src="Public/ViewKanban.js"></script>
+
+    <script>TSF.init();</script>
+
+    <style>
+        /* Overrides */
+        *:not(.time-chart-tooltip):not(.time-chart-tooltip *):not(.fas):not(.fas *) {
+            box-sizing: border-box;
+            color: var(--default_text_color);
+            transition: 0.15s ease-in-out;
+        }
+
+        body {
+            margin: 0px;
+            background-color: var(--main-background-color);
+            font-family: "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        tsf-view-kanban {
+            display: flex;
+            height: 100%;
+        }
+
+        /* For fontawesome - take original color */
+        .fas {
+            color: none;
+            /* color: inherit */
+        }
+
+        .content {
+            height: 100vh;
+            flex: 1 0;
+            box-sizing: border-box;
+            padding: 40px;
+            display: none;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+    </style>
+
+    <title>Kanban</title>
+</head>
+
+<body>
+    <tsf-view-kanban>
+        <div id="menu" class="expanded" tsf-bind-class-expanded="this.menu">
+            <div id="top-menu">
+                <button tsf-bind-function-click="this.menuClick">
+                    <i class="mdl2 mdl2-hamburger" aria-hidden="true"></i>
+                </button>
+                <div id="title-container">
+                    <img id="icon"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Microsoft_To-Do_icon.png/1200px-Microsoft_To-Do_icon.png" />
+                    <span id="title">My ToDos</span>
+                    <div class="separator"></div>
+                </div>
+                <div tsf-for-of="project of this.projects">
+                    <div id="menu-item-container">
+                        <div class="menu-item" tsf-bind-function-click="this.navigate(local.project)"
+                            tsf-bind-class-active="this.open.id === local.project.id">
+                            <div class="menu-item-active-indicator"></div>
+                            <i class="mdl2 mdl2-favorite-star" aria-hidden="true"></i>
+                            <span tsf-html="local.project.name"></span>
+                            <i class="mdl2 mdl2-cog" style="margin-left: auto !important; cursor: pointer;"
+                                aria-hidden="true" tsf-bind-function-click="this.editProject(local.project)"></i>
+                        </div>
+                    </div>
+                </div>
+                <div id="menu-item-container">
+                    <div class="menu-item menu-item-add" tsf-bind-function-click="this.newProject">
+                        <div class="menu-item-active-indicator"></div>
+                        <i class="mdl2 mdl2-add" aria-hidden="true"></i>
+                        <span>New Project</span>
+                    </div>
+                </div>
+            </div>
+            <div id="bottom-menu">
+                <div class="separator"></div>
+                <div class="menu-item">
+                    <div class="menu-item-active-indicator"></div>
+                    <i class="mdl2 mdl2-settings" aria-hidden="true"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content" style="display: flex;">
+            <div class="content-header">
+                <h3 tsf-html="this.open.name || ''" style="display: inline-block;"></h3>
+                <input type="text" tsf-value="this.search" placeholder="Search">
+            </div>
+            <div id="task-container" tsf-for-of="task of this.open.tasks">
+                <div class="task" tsf-bind-function-drop="this.drop(local.task)"
+                    tsf-bind-function-dragover="this.allowDrop(event)">
+                    <div class="task-header">
+                        <div class="task-name" tsf-html="local.task.name"></div>
+                        <i class="mdl2 mdl2-add" style="cursor: pointer;" aria-hidden="true"
+                            tsf-bind-function-click="this.newItem(local.task)"></i>
+                    </div>
+                    <div class="separator" style="width: 100%;"></div>
+                    <div class="task-item-container" tsf-for-of="item of local.task.items.filter(i => this.search === null || i.title.includes(this.search) || i.description.includes(this.search))">
+                        <div class="task-item card" draggable="true" tsf-bind-function-dragstart="this.drag(local.item)"
+                            tsf-bind-function-click="this.selectItem(local.item)">
+                            <div class="task-item-title" tsf-html="local.item.title"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-overlay" tsf-if="this.selected !== null" tsf-if-display="flex"
+            tsf-bind-function-click="this.deselectItem"></div>
+        <div class="panel" tsf-if="this.selected !== null" tsf-if-display="flex" tsf-bind-class-small="!this.largePanel"
+            tsf-bind-class-large="this.largePanel">
+            <div class="panel-left">
+                <i class="mdl2" tsf-bind-function-click="this.resizePanel"
+                    tsf-bind-class-mdl2-scroll-chevron-left-bold-legacy="!this.largePanel"
+                    tsf-bind-class-mdl2-scroll-chevron-right-bold-legacy="this.largePanel" aria-hidden="true"></i>
+            </div>
+            <div class="panel-right">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        Edit Item
+                    </div>
+                    <button class="panel-close" tsf-bind-function-click="this.deselectItem">
+                        <i class="mdl2 mdl2-cancel" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="panel-content-section">
+                        <label>Title</label>
+                        <input type="text" id="title-input" tsf-bind-attribute-value="this.selected.title"/>
+                    </div>
+                    <div class="panel-content-section">
+                        <label>Notes</label>
+                        <textarea id="description" ></textarea>
+                    </div>
+                    <div class="panel-content-section">
+                        <label>Created on</label>
+                        <div tsf-html="this.selected.date" tsf-html-render="this.renderDate"></div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="separator" style="width:100%;"></div>
+                    <div class="panel-footer-button-container">
+                        <button class="panel-footer-button" tsf-bind-function-click="this.archiveItem" tabindex="-1">
+                            <i class="mdl2 mdl2-memo" aria-hidden="true"></i>
+                            <span>Archive</span>
+                        </button>
+                        <button class="panel-footer-button" tsf-bind-function-click="this.deleteItem" tabindex="-2">
+                            <i class="mdl2 mdl2-delete" aria-hidden="true"></i>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-overlay" tsf-if="this.edit !== null" tsf-if-display="flex"
+            tsf-bind-function-click="this.deselectProject"></div>
+        <div class="panel small" tsf-if="this.edit !== null" tsf-if-display="flex">
+            <div class="panel-left">
+            </div>
+            <div class="panel-right">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        Edit Project
+                    </div>
+                    <button class="panel-close" tsf-bind-function-click="this.deselectProject">
+                        <i class="mdl2 mdl2-cancel" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="panel-content-section">
+                        <label>Name</label>
+                        <input type="text" id="project-name" tsf-bind-attribute-value="this.edit.name" />
+                    </div>
+                    <div class="panel-content-section">
+                        <label>Cards</label>
+                        <div style="display: flex;">
+                            <input type="text" placeholder="New Card" tsf-value="this.newCardName"
+                                style="width: 210px;">
+                            <button class="accent"
+                                style="height: 35px !important; min-height: unset; margin-left: 18px;"
+                                tsf-bind-function-click="this.newCard">
+                                <i class="mdl2 mdl2-add" style="margin-right: 10px;"></i>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-content-section">
+                        <div class="table-container">
+                            <table style="width: 100%;">
+                                <tbody tsf-for-of="task of this.edit.tasks">
+                                    <tr>
+                                        <td tsf-html="local.task.name" style="width: calc(100% - 20px);"></td>
+                                        <td>
+                                            <i class="mdl2 mdl2-trash" style="cursor: pointer;" tsf-bind-function-click="this.deleteTask(local.task)"></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="separator" style="width:100%;"></div>
+                    <button class="primary" tsf-bind-function-click="this.deleteProject">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dialog-overlay" tsf-if="this.dialog !== null"></div>
+        <div class="dialog-container">
+            <div class="dialog" tsf-if="this.dialog !== null" tsf-if-display="flex">
+                <div class="dialog-header" tsf-html="this.dialog.type === 'prompt' ? 'Prompt' : 'Confirm'">
+                </div>
+                <div class="dialog-body">
+                    <div tsf-html="this.dialog.message"></div>
+                    <input type="text" id="dialog-input" style="margin-top: 10px; width: 100%;" tsf-if="this.dialog.type === 'prompt'"/>
+                </div>
+                <div class="dialog-footer">
+                    <button class="accent" tsf-bind-function-click="this.hideDialog('ok')">Ok</button>
+                    <button class="primary" tsf-bind-function-click="this.hideDialog('cancel')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </tsf-view-kanban>
+
+    <script>
+        const simplemde = new SimpleMDE({
+            element: document.getElementById("description"),
+            autosave: false,
+            toolbar: false,
+            autoDownloadFontAwesome: false,
+            status: false
+        }); 
+    </script>
+</body>
+
+</html>
