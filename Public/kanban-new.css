@@ -85,6 +85,7 @@
 
 .panel-content {
     display: flex;
+    overflow: auto;
 }
 
 .panel-content-section {
