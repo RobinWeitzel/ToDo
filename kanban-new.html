@@ -82,8 +82,6 @@
                             <div class="menu-item-active-indicator"></div>
                             <i class="mdl2 mdl2-favorite-star" aria-hidden="true"></i>
                             <span tsf-html="local.project.name"></span>
-                            <i class="mdl2 mdl2-cog" style="margin-left: auto !important; cursor: pointer;"
-                                aria-hidden="true" tsf-bind-function-click="this.editProject(local.project)"></i>
                         </div>
                     </div>
                 </div>
@@ -107,7 +105,11 @@
 
         <div class="content" style="display: flex;">
             <div class="content-header">
-                <h3 tsf-html="this.open.name || ''" style="display: inline-block;"></h3>
+                <span>
+                    <h3 tsf-html="this.open.name || ''" style="display: inline-block;"></h3>
+                    <i class="mdl2 mdl2-more" style="margin-left: 7px; cursor: pointer;"
+                    aria-hidden="true" tsf-bind-function-click="this.editProject(this.open)"></i>
+                </span>
                 <input type="text" tsf-value="this.search" placeholder="Search">
             </div>
             <div id="task-container" tsf-for-of="task of this.open.tasks">
