@@ -12,7 +12,7 @@
   "author": "Robin Weitzel",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^10.1.1",
+    "electron": "^11.5.0",
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
